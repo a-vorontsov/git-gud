@@ -1,15 +1,43 @@
 #!/usr/bin/env python3
 import sys, subprocess
+from googlesearch import search
+import re
+import requests
 
-args = sys.argv
-strArgs = ''
-args[0] = "git"
-for arg in args:
-    if " " in arg:
-        arg = '\"%s\"' % arg
-    strArgs += '%s ' % arg
+f = open('helloworld.html','w')
 
-try:
-    out = subprocess.call(strArgs, shell=True)
-except subprocess.CalledProcessError as e:
-    pass # do nothing as error is displayed as part of the git command
+def find_questions(git_error):
+    results = []
+
+    for url in search(git_error, stop=20):
+        if "stackoverflow" in url:
+            m = re.search('questions/(.+?)/', url)
+            print(url)
+            if m:
+                number = m.group(1)
+            results.append(number)
+    return results
+
+def get_answer(number):
+    r = requests.get("https://api.stackexchange.com/2.2/questions/%s/answers?key=U4DMV*8nvpm3EOpvf69Rxw((&site=stackoverflow&page=1&pagesize=1&order=desc&sort=votes&filter=!-*jbN.L_SaIL" % number)
+    return r.json()
+
+
+def get_command():
+    args = sys.argv
+    strArgs = ''
+    args[0] = "git"
+    for arg in args:
+        if " " in arg:
+            arg = '\"%s\"' % arg
+        strArgs += '%s ' % arg
+
+    try:
+        out = subprocess.call(strArgs, shell=True)
+    except subprocess.CalledProcessError as e:
+        question = find_questions(e)
+        f.write(get_answer(question))
+        f.close()
+
+
+get_command()
