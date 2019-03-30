@@ -11,7 +11,5 @@ for arg in args:
 
 try:
     out = subprocess.call(strArgs, shell=True)
-    if out:
-        print(out)
 except subprocess.CalledProcessError as e:
     pass # do nothing as error is displayed as part of the git command
