@@ -1,2 +1,9 @@
 **/.idea/
 **/.vscode/
+**/src/.DS_Store
+**/src/cli/.DS_Store
+**/src/cli/__pycache__/
+**/src/cli/build/
+**/src/cli/dist/
+**/src/cli/git-gud.spec
+

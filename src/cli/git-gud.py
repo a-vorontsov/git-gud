@@ -1,12 +1,9 @@
-#!/usr/bin/env python3
 import sys, subprocess
-from googlesearch import search
 import re
+from googlesearch import search
 import requests
 import html2text
 
-
-f = open('helloworld.html','w')
 h = html2text.HTML2Text()
 def find_questions(git_error):
     results = []
@@ -25,7 +22,13 @@ def get_answer(number):
 
 
 def get_command():
+
     args = sys.argv
+
+    if len(args) == 1:
+        print("Error. Provide git argument.")
+        return;
+
     strArgs = ''
     args[0] = "git"
     for arg in args:
@@ -38,8 +41,7 @@ def get_command():
     except subprocess.CalledProcessError as e:
         err = e.stderr.decode("ascii")
         print(h.handle(get_answer(find_questions(err)[0]).get('items')[0].get('body')))
-        f.write(get_answer(find_questions(err)[0]).get('items')[0].get('body'))
-        f.close()
 
+    return;
 
 get_command()
