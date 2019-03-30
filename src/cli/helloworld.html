@@ -1,13 +1,1 @@
-<p>In the simplest terms, <code>git pull</code> does a <code>git fetch</code> followed by a <code>git merge</code>.</p>
-
-<p>You can do a <code>git fetch</code> at any time to update your remote-tracking branches under <code>refs/remotes/&lt;remote&gt;/</code>.</p>
-
-<p>This operation never changes any of your own local branches under <code>refs/heads</code>, and is safe to do without changing your working copy. I have even heard of people running <code>git fetch</code> periodically in a cron job in the background (although I wouldn't recommend doing this).</p>
-
-<p>A <code>git pull</code> is what you would do to bring a local branch up-to-date with its remote version, while also updating your other remote-tracking branches.</p>
-
-<p>Git documentation: <a href="http://git-scm.com/docs/git-pull" rel="noreferrer"><strong>git pull</strong></a>:</p>
-
-<blockquote>
-  <p>In its default mode, <code>git pull</code> is shorthand for <code>git fetch</code> followed by <code>git merge FETCH_HEAD</code>.</p>
-</blockquote>
+<p>This looks like a broken installation of Git, I'd recommend to reinstall (on Ubuntu, this would be via <code>sudo apt-get install git</code>). The <code>pull</code> command is implemented as a shell script called <code>git-pull</code> located in the path returned by <code>git --exec-path</code>. You might want to check if the file is there.</p>
