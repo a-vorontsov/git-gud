@@ -4,6 +4,7 @@ from googlesearch import search
 import re
 import requests
 
+
 f = open('helloworld.html','w')
 
 def find_questions(git_error):
@@ -33,10 +34,12 @@ def get_command():
         strArgs += '%s ' % arg
 
     try:
-        out = subprocess.call(strArgs, shell=True)
+        out = subprocess.run(strArgs, check=True, stderr=subprocess.PIPE, shell=True)
     except subprocess.CalledProcessError as e:
-        question = find_questions(e)
-        f.write(get_answer(question))
+        err = e.stderr.decode("ascii")
+        print(err)
+        question = find_questions(err)
+        f.write(get_answer(find_questions(err)[0]).get('items')[0].get('body'))
         f.close()
 
 
