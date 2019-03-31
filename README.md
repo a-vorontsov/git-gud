@@ -8,4 +8,4 @@ gud [git command arguments]
 ```
 git gud wraps around the git cli commands and only requires you to write the arguments in as if you were doing normal git commands.
 
-git it (here)[https://git-gud.org/]
+git it [here](https://git-gud.org/)
