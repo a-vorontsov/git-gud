@@ -1,3 +1,15 @@
+* {
+  -webkit-transition: all 300ms ease;
+  -moz-transition: all 300ms ease;
+  -ms-transition: all 300ms ease;
+  -o-transition: all 300ms ease;
+  transition: all 300ms ease;
+}
+
+html, body {
+  background-color: #fefefe;
+}
+
 /* unvisited link */
 a {
    height: 50px;
@@ -5,25 +17,59 @@ a {
    margin: 0 32px;
 }
 
-a:link {
+a.text-only {
+  height: 100%;
+  width: auto;
+  margin: 0;
+}
+
+.button-link {
   background-color: #f44336;
-  color: white;
+  color: #fefefe;
   padding: 14px 25px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
+  box-shadow: 6px 6px 10px rgba(21, 20, 37, 0.1);
+  border-radius: 6px;
 }
 
 /* visited link */
-a:visited {
-  color: blue;
+.button-link:visited {
+  color: #fefefe;
   text-decoration: none;
   background-color: #f44336;
 }
 
 /* mouse over link */
-a:hover {
-  color: black;
-  text-decoration: underline;
+.button-link:hover {
+  color: #efefef;
+  text-decoration: none;
   background-color: #f44336;
+  box-shadow: 6px 6px 10px rgba(21, 20, 37, 0.3);
+  transform: translateY(-1px);
+}
+
+.button-link:active {
+  box-shadow: 6px 6px 10px rgba(21, 20, 37, 0.01);
+  transform: translateY(0px);
+}
+
+.nav-item.nav-link {
+  border-radius: 6px 6px 0 0;
+  color: #f44336;
+}
+
+.nav {
+  display: block;
+}
+
+.nav-tabs > a {
+  float: none;
+  display: inline-block;
+  zoom: 1;
+}
+
+.nav-tabs {
+  text-align: center;
 }

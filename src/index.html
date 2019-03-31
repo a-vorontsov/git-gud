@@ -9,39 +9,42 @@
 </head>
 <body>
     <div class="jumbotron jumbotron-fluid">
-        <div class="container">
+        <div class="container p-5">
             <h1 align="center"class="display-4">Git Gud</h1>
         </div>
+        <div class="container text-center p-5">
+            <a class="button-link col-4" href="cli/mac/gud" download="gud">Download for macOS</a>
+            <a class="button-link col-4" href="cli/linux/gud" download="gud">Download for Ubuntu/Debian</a>
+        </div>
     </div>
-    <div class="container text-center">
-        <a href="cli/mac/git-gud" download="git-gud">Download MacOS Version</a>
-        <a align="center" href="cli/linux/git-gud" download="git-gud">Download Linux Version</a>
-    </div>
-    <div class="container">
-        <h2>Instructions</h2>
+    <div class="container p-5">
+        <h2 class="p-4">Instructions</h2>
         <nav>
           <div class="nav nav-tabs text-center" id="nav-tab" role="tablist">
-            <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-mac" role="tab" aria-controls="nav-home" aria-selected="true">MacOS</a>
-            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-linux" role="tab" aria-controls="nav-profile" aria-selected="false">Linux</a>
+            <a class="nav-item nav-link col-4 active" id="nav-mac-tab" data-toggle="tab" href="#nav-mac" role="tab" aria-controls="nav-home" aria-selected="true">MacOS</a>
+            <a class="nav-item nav-link col-4" id="nav-linux-tab" data-toggle="tab" href="#nav-linux" role="tab" aria-controls="nav-profile" aria-selected="false">Linux</a>
           </div>
         </nav>
         <div class="tab-content" id="nav-tabContent">
-            <div class="tab-pane fade show active" id="nav-mac" role="tabpanel" aria-labelledby="nav-home-tab">
+            <div class="tab-pane fade lead p-5 show active" id="nav-mac" role="tabpanel" aria-labelledby="nav-home-tab">
                 <ul>
-                    <li>Download the right version for your operating system.</li>
-                    <li>Modify permissions: <code>chmod +x git-gud</code></li>
-                    <li>Move file to <code>/usr/local/bin/</code></li>
-                    <li>Run <code>git-gud <i>command</i></code></li>
+                    <li>Download the macOS executable</li>
+                    <li>Modify permissions: <code>chmod +x gud</code></li>
+                    <li>Move file using <code>(sudo) mv &lt;path_to_file&gt; /usr/local/bin/</code></li>
+                    <li>Run <code>gud <i>command</i></code> where <code><i>command</i></code> is a git command</li>
                 </ul>
             </div>
-            <div class="tab-pane fade" id="nav-linux" role="tabpanel" aria-labelledby="nav-profile-tab">
+            <div class="tab-pane fade lead p-5" id="nav-linux" role="tabpanel" aria-labelledby="nav-profile-tab">
                 <ul>
-                    <li>Download the right version for your operating system.</li>
-                    <li>Modify permissions: <code>chmod +x git-gud</code></li>
-                    <li>Move file to <code>/usr/bin/</code></li>
-                    <li>Run <code>git-gud <i>command</i></code></li>
+                    <li>Download the Ubuntu/Debian executable</li>
+                    <li>Modify permissions: <code>chmod +x gud</code></li>
+                    <li>Move file using <code>(sudo) mv &lt;path_to_file&gt; /usr/bin/</code></li>
+                    <li>Run <code>gud <i>command</i></code> where <code><i>command</i></code> is a git command</li>
                 </ul>
             </div>
+        </div>
+        <div>
+            <p>Source code for this project can be found at our <a class="text-only" href="https://github.com/a-vorontsov/git-gud" target="_blank">Github Repository</a></p>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
