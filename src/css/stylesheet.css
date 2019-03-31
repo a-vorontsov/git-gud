@@ -1,0 +1,29 @@
+/* unvisited link */
+a {
+   height: 50px;
+   width: 300px;
+   margin: 0 32px;
+}
+
+a:link {
+  background-color: #f44336;
+  color: white;
+  padding: 14px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+}
+
+/* visited link */
+a:visited {
+  color: blue;
+  text-decoration: none;
+  background-color: #f44336;
+}
+
+/* mouse over link */
+a:hover {
+  color: black;
+  text-decoration: underline;
+  background-color: #f44336;
+}
