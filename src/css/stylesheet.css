@@ -13,6 +13,10 @@ html, body {
   color: #f4f1ec;
 }
 
+.colour-white {
+  color: #f4f1ec
+}
+
 .jumbotron {
   background-color: #060915;
 }
@@ -36,10 +40,15 @@ a.text-only {
   height: 100%;
   width: auto;
   margin: 0;
+  color: #00CD00
+}
+
+a.text-only:hover {
+  color: #00CD00;
 }
 
 .button-link {
-  background-color: #f44336;
+  background-color: #00CD00;
   color: #fefefe;
   padding: 14px 25px;
   text-align: center;
@@ -53,14 +62,14 @@ a.text-only {
 .button-link:visited {
   color: #fefefe;
   text-decoration: none;
-  background-color: #f44336;
+  background-color: #00CD00;
 }
 
 /* mouse over link */
 .button-link:hover {
   color: #efefef;
   text-decoration: none;
-  background-color: #f44336;
+  background-color: #00CD00;
   box-shadow: 6px 6px 10px rgba(21, 20, 37, 0.3);
   transform: translateY(-2px);
 }
@@ -72,7 +81,7 @@ a.text-only {
 
 .nav-item.nav-link {
   border-radius: 6px 6px 0 0;
-  color: #f44336;
+  color: #00CD00;
 }
 
 .nav {
