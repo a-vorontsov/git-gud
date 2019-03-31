@@ -3,43 +3,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Git Gud</title>
+    <title>git gud</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" href="css/stylesheet.css"/>
 </head>
 <body>
     <div class="jumbotron jumbotron-fluid">
-        <div class="container p-5">
-            <h1 align="center"class="display-4">Git Gud</h1>
+        <div class="container p-md-5 p-sm-3 p-1">
+            <h1 align="center"class="display-4">git gud</h1>
         </div>
-        <div class="container text-center p-5">
-            <a class="button-link col-4" href="cli/mac/gud" download="gud">Download for macOS</a>
-            <a class="button-link col-4" href="cli/linux/gud" download="gud">Download for Ubuntu/Debian</a>
+        <div class="container text-center p-md-5 p-sm-3 p-1">
+            <a class="button-link col-md-5 col-lg-4 m-sm-1 m-md-2 m-lg-3 hidden-sm" href="cli/mac/gud" download="gud">Download for macOS</a>
+            <a class="button-link col-md-5 col-lg-4 m-sm-1 m-md-2 m-lg-3 hidden-sm" href="cli/linux/gud" download="gud">Download for Ubuntu/Debian</a>
         </div>
     </div>
-    <div class="container p-5">
-        <h2 class="p-4">Instructions</h2>
+    <div class="container p-md-5 p-sm-3 p-1">
+        <h1 class="p-4">What is git gud?</h1>
+        <p class="lead p-4">
+            git gud is a wrapper command line interface (CLI) for git. git gud takes your mistakes and errors and automagically retrieves relevant StackOverflow answers right to your terminal.
+        </p>
+        <h1 class="p-4">How do I git gud?</h1>
         <nav>
           <div class="nav nav-tabs text-center" id="nav-tab" role="tablist">
-            <a class="nav-item nav-link col-4 active" id="nav-mac-tab" data-toggle="tab" href="#nav-mac" role="tab" aria-controls="nav-home" aria-selected="true">MacOS</a>
-            <a class="nav-item nav-link col-4" id="nav-linux-tab" data-toggle="tab" href="#nav-linux" role="tab" aria-controls="nav-profile" aria-selected="false">Linux</a>
+            <a class="nav-item nav-link col-md-4 col-3 active" id="nav-mac-tab" data-toggle="tab" href="#nav-mac" role="tab" aria-controls="nav-home" aria-selected="true">MacOS</a>
+            <a class="nav-item nav-link col-md-4 col-3" id="nav-linux-tab" data-toggle="tab" href="#nav-linux" role="tab" aria-controls="nav-profile" aria-selected="false">Linux</a>
           </div>
         </nav>
         <div class="tab-content" id="nav-tabContent">
-            <div class="tab-pane fade lead p-5 show active" id="nav-mac" role="tabpanel" aria-labelledby="nav-home-tab">
+            <div class="tab-pane fade lead p-md-5 p-sm-3 p-1 show active" id="nav-mac" role="tabpanel" aria-labelledby="nav-home-tab">
                 <ul>
-                    <li>Download the macOS executable</li>
-                    <li>Modify permissions: <code>chmod +x gud</code></li>
-                    <li>Move file using <code>(sudo) mv &lt;path_to_file&gt; /usr/local/bin/</code></li>
-                    <li>Run <code>gud <i>command</i></code> where <code><i>command</i></code> is a git command</li>
+                    <li>Download the macOS executable to your machine</li>
+                    <li>Modify permissions: <code>chmod +x &lt;path_to_gud&gt;</code></li>
+                    <li>Move file: <code>(sudo) mv &lt;path_to_gud&gt; /usr/local/bin/</code></li>
+                    <li>Run <code>gud <i>[commands]</i></code> where <code><i>[commands]</i></code> are git arguments</li>
                 </ul>
             </div>
-            <div class="tab-pane fade lead p-5" id="nav-linux" role="tabpanel" aria-labelledby="nav-profile-tab">
+            <div class="tab-pane fade lead p-md-5 p-sm-3 p-1" id="nav-linux" role="tabpanel" aria-labelledby="nav-profile-tab">
                 <ul>
-                    <li>Download the Ubuntu/Debian executable</li>
-                    <li>Modify permissions: <code>chmod +x gud</code></li>
-                    <li>Move file using <code>(sudo) mv &lt;path_to_file&gt; /usr/bin/</code></li>
-                    <li>Run <code>gud <i>command</i></code> where <code><i>command</i></code> is a git command</li>
+                    <li>Download the Ubuntu/Debian executable to your machine</li>
+                    <li>Modify permissions: <code>chmod +x &lt;path_to_gud&gt;</code></li>
+                    <li>Move file: <code>(sudo) mv &lt;path_to_gud&gt; /usr/bin/</code></li>
+                    <li>Run <code>gud <i>[commands]</i></code> where <code><i>[commands]</i></code> are git arguments</li>
                 </ul>
             </div>
         </div>

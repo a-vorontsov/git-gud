@@ -12,7 +12,7 @@ html, body {
 
 /* unvisited link */
 a {
-   height: 50px;
+   min-height: 50px;
    width: 300px;
    margin: 0 32px;
 }
@@ -72,4 +72,10 @@ a.text-only {
 
 .nav-tabs {
   text-align: center;
+}
+
+@media (max-width: 767.98px) {
+  .hidden-sm {
+    display: none;
+  }
 }
