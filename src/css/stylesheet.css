@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Inconsolata');
+
 * {
   -webkit-transition: all 300ms ease;
   -moz-transition: all 300ms ease;
@@ -7,7 +9,20 @@
 }
 
 html, body {
-  background-color: #fefefe;
+  background-color: #010205;
+  color: #f4f1ec;
+}
+
+.jumbotron {
+  background-color: #060915;
+}
+
+.code-green {
+  color: #00CD00;
+}
+
+code, .monospace {
+  font-family: 'Inconsolata', monospace;
 }
 
 /* unvisited link */
@@ -47,7 +62,7 @@ a.text-only {
   text-decoration: none;
   background-color: #f44336;
   box-shadow: 6px 6px 10px rgba(21, 20, 37, 0.3);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 }
 
 .button-link:active {
@@ -70,12 +85,33 @@ a.text-only {
   zoom: 1;
 }
 
+.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
+  color: #fefefe;
+  background-color: #010205;
+  border-color: #1d2833 #1d2833 #1c1c1c #1d2833;
+}
+
+.nav-tabs .nav-link:focus, .nav-tabs .nav-link:hover {
+  border-color: #1b2632 #1b2632 #1d2833 #1b2632
+}
+
 .nav-tabs {
   text-align: center;
+  border-bottom-color: #1d2833;
 }
 
 @media (max-width: 767.98px) {
   .hidden-sm {
     display: none;
+  }
+}
+
+.blink-me {
+  animation: blinker 1.25s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
   }
 }
