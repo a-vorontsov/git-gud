@@ -29,6 +29,10 @@ code, .monospace {
   font-family: 'Inconsolata', monospace;
 }
 
+code {
+  color: #CDCD00;
+}
+
 /* unvisited link */
 a {
    min-height: 50px;
