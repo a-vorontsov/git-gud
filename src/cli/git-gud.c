@@ -1,20 +1,33 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-#include <netdb.h>
 #include <ctype.h>
 #include <zlib.h>
+#include <curl/curl.h>
 
 char rfc3986[256] = {0};
 char html5[256] = {0};
 
 long unsigned int MAX_SIZE = 200000;
 
+struct string {
+  char *ptr;
+  size_t len;
+};
+
+void init_string(struct string *s) {
+  s->len = 0;
+  s->ptr = malloc(s->len+1);
+  if (s->ptr == NULL) {
+    fprintf(stderr, "malloc() failed\n");
+    exit(EXIT_FAILURE);
+  }
+  s->ptr[0] = '\0';
+}
+
 void url_encoder_rfc_tables_init() {
     int i;
     for (i = 0; i < 256; i++) {
-
         rfc3986[i] = isalnum(i) || i == '~' || i == '-' || i == '.' || i == '_' ? i : 0;
         html5[i] = isalnum(i) || i == '*' || i == '-' || i == '.' || i == '_' ? i : (i == ' ') ? '+' : 0;
     }
@@ -29,7 +42,6 @@ char *url_encode( char *table, unsigned char *s, char *enc) {
         }
         while (*++enc);
     }
-
     return(enc);
 }
 
@@ -56,49 +68,47 @@ char *inflateBytes(char *input) {
     return (char *)c;
 }
 
-char *sendReq(char *route) {
-    char firstHalf[500] = "api.stackexchange.com";
-    char *secondHalf = route;
-    char request[MAX_SIZE];
-    struct hostent *server;
-    struct sockaddr_in serveraddr;
-    int port = 80;
+size_t writefunc(void *ptr, size_t size, size_t nmemb, struct string *s) {
+  size_t new_len = s->len + size*nmemb;
+  s->ptr = realloc(s->ptr, new_len+1);
 
-    int tcpSocket = socket(AF_INET, SOCK_STREAM, 0);
+  if (s->ptr == NULL) {
+    fprintf(stderr, "realloc() failed\n");
+  }
 
-    server = gethostbyname(firstHalf);
+  memcpy(s->ptr+s->len, ptr, size*nmemb);
+  s->ptr[new_len] = '\0';
+  s->len = new_len;
 
-    memset((char *) &serveraddr, 0, sizeof(serveraddr));
-    serveraddr.sin_family = AF_INET;
+  return size*nmemb;
+}
 
-    memmove((char *)&serveraddr.sin_addr.s_addr, (char *)server->h_addr_list[0], server->h_length);
+char *sendCurlReq(char *route) {
+    CURL *curl = curl_easy_init();
+    struct curl_slist *slist = NULL;
+    if (curl) {
+        CURLcode res;
+        slist = curl_slist_append(slist, "Accept: application/json");
+        slist = curl_slist_append(slist, "Accept-Encoding: deflate");
+        struct string s;
+        init_string(&s);
 
-    serveraddr.sin_port = htons(port);
+        curl_easy_setopt(curl, CURLOPT_URL, route);
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, slist);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writefunc);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &s);
 
-    if (connect(tcpSocket, (struct sockaddr *) &serveraddr, sizeof(serveraddr)) < 0) {
-        printf("Error Connecting\n");
+        res = curl_easy_perform(curl);
+        curl_slist_free_all(slist);
+        if (res != CURLE_OK) {
+            fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+        }
+
+        curl_easy_cleanup(curl);
+        return inflateBytes(s.ptr);
+    } else {
+        return "";
     }
-    memset(request, 0, MAX_SIZE);
-
-    sprintf(request, "GET %s HTTP/1.1\r\nHost: %s\r\nAccept: application/json\r\nAccept-Encoding: deflate\r\nCache-Control: must-revalidate, private, max-age=0\r\nConnection: keep-alive\r\nDNT: 1\r\n\r\n", secondHalf, firstHalf);
-
-    if (send(tcpSocket, request, strlen(request), 0) < 0) {
-        fprintf(stderr, "Error with send()");
-    }
-    memset(request, 0, MAX_SIZE);
-
-    if (recv(tcpSocket, request, MAX_SIZE-1, 0) < 0) {
-        fprintf(stderr, "Error with recv()");
-    }
-
-    close(tcpSocket);
-
-    char *data = strstr(request, "\r\n\r\n");
-    if (data != NULL) {
-        data += 4;
-    }
-
-    return inflateBytes(data);
 }
 
 void getQuestion(char question[1024]) {
@@ -107,9 +117,9 @@ void getQuestion(char question[1024]) {
     url_encoder_rfc_tables_init();
     url_encode(rfc3986, (unsigned char*) question, urlEncoded);
     sprintf(request,
-            "/2.2/search/excerpts?key=U4DMV*8nvpm3EOpvf69Rxw((&pagesize=1&order=desc&sort=relevance&q=%s&site=stackoverflow&filter=!1zSijXI74x1547R0kRXdT",
+            "http://api.stackexchange.com/2.2/search/excerpts?key=U4DMV*8nvpm3EOpvf69Rxw((&pagesize=1&order=desc&sort=relevance&q=%s&site=stackoverflow&filter=!1zSijXI74x1547R0kRXdT",
             urlEncoded);
-    char *response = sendReq(request);
+    char *response = sendCurlReq(request);
     printf("\noutput: %s\n", response);
 }
 
@@ -119,9 +129,9 @@ void getAnswer(char question[1024]) {
     url_encoder_rfc_tables_init();
     url_encode(rfc3986, (unsigned char*) question, urlEncoded);
     sprintf(request,
-            "/2.2/questions/%s/answers?key=U4DMV*8nvpm3EOpvf69Rxw((&site=stackoverflow&page=1&pagesize=1&order=desc&sort=votes&filter=!Fcb(61J.xH8zQMnNMwf2k.*R8T",
+            "http://api.stackexchange.com/2.2/questions/%s/answers?key=U4DMV*8nvpm3EOpvf69Rxw((&site=stackoverflow&page=1&pagesize=1&order=desc&sort=votes&filter=!Fcb(61J.xH8zQMnNMwf2k.*R8T",
             urlEncoded);
-    char *response = sendReq(request);
+    char *response = sendCurlReq(request);
     printf("\noutput: %s\n", response);
 }
 
