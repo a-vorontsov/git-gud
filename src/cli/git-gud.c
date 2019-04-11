@@ -6,9 +6,6 @@
 #include <ctype.h>
 #include <zlib.h>
 
-// TODO:
-// api.stackexchange.com
-
 char rfc3986[256] = {0};
 char html5[256] = {0};
 
@@ -36,6 +33,29 @@ char *url_encode( char *table, unsigned char *s, char *enc) {
     return(enc);
 }
 
+char *inflateBytes(char *input) {
+    unsigned char *c = malloc(MAX_SIZE);
+
+    z_stream infstream;
+    infstream.zalloc = Z_NULL;
+    infstream.zfree = Z_NULL;
+    infstream.opaque = Z_NULL;
+    // setup "b" as the input and "c" as the compressed output
+    infstream.avail_in = (uInt)strlen(input); // size of input
+    infstream.next_in = (Bytef *)input; // input char array
+
+    infstream.avail_out = (uInt)MAX_SIZE; // size of output
+    infstream.next_out = c; // output char array
+
+    // the actual decompression work.
+    if (inflateInit2(&infstream, -MAX_WBITS) != Z_OK) {
+        fprintf(stderr, "Error with inflateInit2()");
+    }
+    inflate(&infstream, Z_NO_FLUSH);
+    inflateEnd(&infstream);
+    return (char *)c;
+}
+
 char *sendReq(char *route) {
     char firstHalf[500] = "api.stackexchange.com";
     char *secondHalf = route;
@@ -60,7 +80,7 @@ char *sendReq(char *route) {
     }
     memset(request, 0, MAX_SIZE);
 
-    sprintf(request, "GET %s HTTP/1.1\r\nHost: %s\r\nAccept: */*\r\nAccept-Encoding: deflate\r\n\r\n", secondHalf, firstHalf);
+    sprintf(request, "GET %s HTTP/1.1\r\nHost: %s\r\nAccept: application/json\r\nAccept-Encoding: deflate\r\nCache-Control: must-revalidate, private, max-age=0\r\nConnection: keep-alive\r\nDNT: 1\r\n\r\n", secondHalf, firstHalf);
 
     if (send(tcpSocket, request, strlen(request), 0) < 0) {
         fprintf(stderr, "Error with send()");
@@ -78,27 +98,7 @@ char *sendReq(char *route) {
         data += 4;
     }
 
-    unsigned char *c = malloc(MAX_SIZE);
-
-    z_stream infstream;
-    infstream.zalloc = Z_NULL;
-    infstream.zfree = Z_NULL;
-    infstream.opaque = Z_NULL;
-    // setup "b" as the input and "c" as the compressed output
-    infstream.avail_in = (uInt)strlen(data); // size of input
-    infstream.next_in = (Bytef *)data; // input char array
-
-    infstream.avail_out = (uInt)MAX_SIZE; // size of output
-    infstream.next_out = c; // output char array
-
-    // the actual decompression work.
-    if (inflateInit2(&infstream, -MAX_WBITS) != Z_OK) {
-        fprintf(stderr, "Error with inflateInit2()");
-    }
-    int inf = inflate(&infstream, Z_NO_FLUSH);
-    printf("\ninflate: %d\n", inf);
-    inflateEnd(&infstream);
-    return (char *)c;
+    return inflateBytes(data);
 }
 
 void getQuestion(char question[1024]) {
@@ -119,9 +119,8 @@ void getAnswer(char question[1024]) {
     url_encoder_rfc_tables_init();
     url_encode(rfc3986, (unsigned char*) question, urlEncoded);
     sprintf(request,
-            "/2.2/questions/%s/answers?order=desc&sort=activity&site=stackoverflow&filter=!Fcb(61J.xH8zQMnNMwf2k.*R8T",
+            "/2.2/questions/%s/answers?key=U4DMV*8nvpm3EOpvf69Rxw((&site=stackoverflow&page=1&pagesize=1&order=desc&sort=votes&filter=!Fcb(61J.xH8zQMnNMwf2k.*R8T",
             urlEncoded);
-    printf("\nreq: %s\n", request);
     char *response = sendReq(request);
     printf("\noutput: %s\n", response);
 }
