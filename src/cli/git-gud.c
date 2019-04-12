@@ -4,6 +4,7 @@
 #include <ctype.h>
 #include <zlib.h>
 #include <curl/curl.h>
+#include <cjson/cJSON.h>
 
 char rfc3986[256] = {0};
 char html5[256] = {0};
@@ -23,6 +24,34 @@ void init_string(struct string *s) {
     exit(EXIT_FAILURE);
   }
   s->ptr[0] = '\0';
+}
+
+void get_json_body(char *input) {
+    cJSON *root = cJSON_Parse(input);
+    cJSON *items = cJSON_GetObjectItem(root, "items");
+    if (cJSON_IsArray(items)) {
+        for (int i = 0; i < cJSON_GetArraySize(items); i++) {
+            cJSON *item = cJSON_GetArrayItem(items, i);
+            char *link = cJSON_GetObjectItem(item, "link")->valuestring;
+            char *body = cJSON_GetObjectItem(item, "body")->valuestring;
+            printf("\nLink: %s\nBody: %s\n", link, body);
+        }
+    }
+    cJSON_Delete(root);
+}
+
+int get_json_question(char *input) {
+    int question_id = -1;
+    cJSON *root = cJSON_Parse(input);
+    cJSON *items = cJSON_GetObjectItem(root, "items");
+    if (cJSON_IsArray(items)) {
+        for (int i = 0; i < cJSON_GetArraySize(items); i++) {
+            cJSON *item = cJSON_GetArrayItem(items, i);
+            question_id = cJSON_GetObjectItem(item, "question_id")->valueint;
+        }
+    }
+    cJSON_Delete(root);
+    return question_id;
 }
 
 void url_encoder_rfc_tables_init() {
@@ -45,27 +74,27 @@ char *url_encode( char *table, unsigned char *s, char *enc) {
     return(enc);
 }
 
-char *inflateBytes(char *input) {
-    unsigned char *c = malloc(MAX_SIZE);
+char *inflate_bytes(char *input) {
+    unsigned char *output = malloc(MAX_SIZE);
 
     z_stream infstream;
     infstream.zalloc = Z_NULL;
     infstream.zfree = Z_NULL;
     infstream.opaque = Z_NULL;
-    // setup "b" as the input and "c" as the compressed output
+
     infstream.avail_in = (uInt)strlen(input); // size of input
     infstream.next_in = (Bytef *)input; // input char array
 
     infstream.avail_out = (uInt)MAX_SIZE; // size of output
-    infstream.next_out = c; // output char array
+    infstream.next_out = output; // output char array
 
     // the actual decompression work.
     if (inflateInit2(&infstream, -MAX_WBITS) != Z_OK) {
-        fprintf(stderr, "Error with inflateInit2()");
+        fprintf(stderr, "Error with inflateInit2()\n");
     }
     inflate(&infstream, Z_NO_FLUSH);
     inflateEnd(&infstream);
-    return (char *)c;
+    return (char *)output;
 }
 
 size_t writefunc(void *ptr, size_t size, size_t nmemb, struct string *s) {
@@ -83,7 +112,7 @@ size_t writefunc(void *ptr, size_t size, size_t nmemb, struct string *s) {
   return size*nmemb;
 }
 
-char *sendCurlReq(char *route) {
+char *send_req(char *route) {
     CURL *curl = curl_easy_init();
     struct curl_slist *slist = NULL;
     if (curl) {
@@ -105,34 +134,31 @@ char *sendCurlReq(char *route) {
         }
 
         curl_easy_cleanup(curl);
-        return inflateBytes(s.ptr);
+        return inflate_bytes(s.ptr);
     } else {
         return "";
     }
 }
 
-void getQuestion(char question[1024]) {
+int get_question(char question[1024]) {
     char request[1536];
-    char urlEncoded[1200];
+    char url_encoded[1200];
     url_encoder_rfc_tables_init();
-    url_encode(rfc3986, (unsigned char*) question, urlEncoded);
+    url_encode(rfc3986, (unsigned char*) question, url_encoded);
     sprintf(request,
             "http://api.stackexchange.com/2.2/search/excerpts?key=U4DMV*8nvpm3EOpvf69Rxw((&pagesize=1&order=desc&sort=relevance&q=%s&site=stackoverflow&filter=!1zSijXI74x1547R0kRXdT",
-            urlEncoded);
-    char *response = sendCurlReq(request);
-    printf("\noutput: %s\n", response);
+            url_encoded);
+    char *response = send_req(request);
+    return get_json_question(response);
 }
 
-void getAnswer(char question[1024]) {
+void get_answer(int question) {
     char request[1536];
-    char urlEncoded[1200];
-    url_encoder_rfc_tables_init();
-    url_encode(rfc3986, (unsigned char*) question, urlEncoded);
     sprintf(request,
-            "http://api.stackexchange.com/2.2/questions/%s/answers?key=U4DMV*8nvpm3EOpvf69Rxw((&site=stackoverflow&page=1&pagesize=1&order=desc&sort=votes&filter=!Fcb(61J.xH8zQMnNMwf2k.*R8T",
-            urlEncoded);
-    char *response = sendCurlReq(request);
-    printf("\noutput: %s\n", response);
+            "http://api.stackexchange.com/2.2/questions/%d/answers?key=U4DMV*8nvpm3EOpvf69Rxw((&site=stackoverflow&page=1&pagesize=1&order=desc&sort=votes&filter=!Fcb(61J.xH8zQMnNMwf2k.*R8T",
+            question);
+    char *response = send_req(request);
+    get_json_body(response);
 }
 
 int main(int argc, char *argv[]) {
@@ -154,9 +180,13 @@ int main(int argc, char *argv[]) {
         int nbytes = read(pipefd[0], buffer, sizeof(buffer)); // Get size of pipe buffer
         strtok(buffer, "\n");
         if (nbytes > 0) {
-            printf("Err:\n%s\n", buffer);
-            getQuestion(buffer);
-            getAnswer("20413459");
+            int question = get_question(buffer);
+            if (question >= 0) {
+                get_answer(question);
+            } else {
+                fprintf(stderr, "Error getting question\n");
+                fprintf(stderr, "Git error:\n > %s\n", buffer);
+            }
         }
     }
     return 0;
