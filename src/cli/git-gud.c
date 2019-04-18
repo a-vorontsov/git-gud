@@ -146,7 +146,7 @@ int get_question(char question[1024]) {
     url_encoder_rfc_tables_init();
     url_encode(rfc3986, (unsigned char*) question, url_encoded);
     sprintf(request,
-            "http://api.stackexchange.com/2.2/search/excerpts?key=U4DMV*8nvpm3EOpvf69Rxw((&pagesize=1&order=desc&sort=relevance&q=%s&site=stackoverflow&filter=!1zSijXI74x1547R0kRXdT",
+            "http://api.stackexchange.com/2.2/search/excerpts?key=U4DMV*8nvpm3EOpvf69Rxw((&pagesize=1&order=desc&sort=relevance&q=%s&site=stackoverflow&filter=!SWKo1XseJVmz_nSOm9",
             url_encoded);
     char *response = send_req(request);
     return get_json_question(response);
