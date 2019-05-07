@@ -157,7 +157,7 @@ func main() {
 		answer := getAnswer(question)
 		text := formatHTML(answer)
 		fmt.Println(text)
-	} else {
+	} else if isIgnoreError(gitError) {
 		fmt.Println(gitError)
 	}
 }
